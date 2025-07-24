@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms'
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -18,12 +19,17 @@ export class LoginComponent {
   isLoading = false;
   errorMessage = '';
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   onSubmit(): void {
     if (this.isLoading) return;
 
     this.isLoading = true;
     this.errorMessage = '';
+
+    setTimeout(() => {
+      this.isLoading = false;
+      this.router.navigate(['/dashboard']);
+    }, 1000);
   }
 }
