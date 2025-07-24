@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { CommonModule } from '@angular/common';
+import { ChartComponent } from '../../shared/components/chart/chart.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [HeaderComponent, CommonModule],
+  imports: [HeaderComponent, CommonModule, ChartComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
@@ -92,6 +93,20 @@ export class DashboardComponent implements OnInit {
   isRefreshing = false;
 
   chartData: any = null;
+  chartOptions: any = {
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          padding: 15,
+          usePointStyle: true,
+          font: {
+            size: 11,
+          },
+        },
+      },
+    },
+  };
 
   ngOnInit(): void {
     this.loadData();
@@ -118,7 +133,34 @@ export class DashboardComponent implements OnInit {
   private loadAssetAllocation(): void {
     setTimeout(() => {
       this.isLoadingAllocation = false;
+      const mockAllocation = [
+        { type: 'Stocks', value: 60850, percentage: 42.8 },
+        { type: 'Funds', value: 44200, percentage: 31.1 },
+        { type: 'Crypto', value: 18900, percentage: 13.3 },
+        { type: 'Bonds', value: 15400, percentage: 10.8 },
+        { type: 'Cash', value: 3000, percentage: 2.1 },
+      ];
+
+      this.createChartData(mockAllocation);
     }, 1000);
+  }
+
+  private createChartData(
+    allocation: { type: string; value: number; percentage: number }[]
+  ): void {
+    const colors = ['#061d40', '#3861be', '#46825a', '#6b7280', '#f59e0b'];
+
+    this.chartData = {
+      labels: allocation.map((item) => item.type),
+      datasets: [
+        {
+          data: allocation.map((item) => item.value),
+          backgroundColor: colors.slice(0, allocation.length),
+          borderWidth: 2,
+          borderColor: '#ffffff',
+        },
+      ],
+    };
   }
 
   refreshData(): void {
@@ -146,20 +188,20 @@ export class DashboardComponent implements OnInit {
 
   getTypeColorClass(type: string): string {
     const colorMap: { [key: string]: string } = {
-      'stock': 'bg-blue-100 text-blue-800',
-      'fund': 'bg-green-100 text-green-800',
-      'crypto': 'bg-yellow-100 text-yellow-800',
-      'bond': 'bg-gray-100 text-gray-800'
+      stock: 'bg-blue-100 text-blue-800',
+      fund: 'bg-green-100 text-green-800',
+      crypto: 'bg-yellow-100 text-yellow-800',
+      bond: 'bg-gray-100 text-gray-800',
     };
     return colorMap[type] || 'bg-gray-100 text-gray-800';
   }
 
   getTypeLabel(type: string): string {
     const labelMap: { [key: string]: string } = {
-      'stock': 'Stock',
-      'fund': 'Fund',
-      'crypto': 'Crypto',
-      'bond': 'Bond'
+      stock: 'Stock',
+      fund: 'Fund',
+      crypto: 'Crypto',
+      bond: 'Bond',
     };
     return labelMap[type] || type;
   }

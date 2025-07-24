@@ -175,7 +175,12 @@
               *ngIf="!isLoadingAllocation && chartData"
               class="w-full h-full"
             >
-            <!-- TODO: Create Chart Component -->
+              <app-chart
+                [type]="'doughnut'"
+                [data]="chartData"
+                [options]="chartOptions"
+              >
+              </app-chart>
             </div>
             <div
               *ngIf="!isLoadingAllocation && !chartData"
