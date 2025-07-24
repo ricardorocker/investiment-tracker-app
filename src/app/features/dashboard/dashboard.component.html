@@ -1,2 +1,319 @@
-<app-header></app-header>
-<p>dashboard works!</p>
+<div class="min-h-screen bg-cambridge-light">
+  <app-header></app-header>
+
+  <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <!-- Welcome Section -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-serif font-bold text-cambridge-gray">
+        Dashboard
+      </h1>
+      <p class="mt-2 text-gray-600">
+        Track your investment portfolio performance
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div
+                class="h-8 w-8 bg-cambridge-blue rounded-md flex items-center justify-center"
+              >
+                <span class="text-white text-sm">💰</span>
+              </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">
+                  Total Invested
+                </dt>
+                <dd class="text-lg font-medium text-gray-900">
+                  <span *ngIf="!isLoadingSummary">{{
+                    formatCurrency(portfolioSummary.totalInvested || 0)
+                  }}</span>
+                  <div
+                    *ngIf="isLoadingSummary"
+                    class="animate-pulse bg-gray-200 h-6 w-20 rounded"
+                  ></div>
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div
+                class="h-8 w-8 bg-cambridge-green rounded-md flex items-center justify-center"
+              >
+                <span class="text-white text-sm">📈</span>
+              </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">
+                  Current Value
+                </dt>
+                <dd class="text-lg font-medium text-gray-900">
+                  <span *ngIf="!isLoadingSummary">{{
+                    formatCurrency(portfolioSummary.currentValue || 0)
+                  }}</span>
+                  <div
+                    *ngIf="isLoadingSummary"
+                    class="animate-pulse bg-gray-200 h-6 w-20 rounded"
+                  ></div>
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div
+                class="h-8 w-8 bg-cambridge-blue-light rounded-md flex items-center justify-center"
+              >
+                <span class="text-white text-sm">💎</span>
+              </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">
+                  Total Return
+                </dt>
+                <dd
+                  class="text-lg font-medium"
+                  [class]="
+                    getReturnColorClass(portfolioSummary.totalReturn || 0)
+                  "
+                >
+                  <span *ngIf="!isLoadingSummary">
+                    {{ formatCurrency(portfolioSummary.totalReturn || 0) }}
+                    <span class="text-sm"
+                      >({{
+                        formatPercentage(
+                          portfolioSummary.totalReturnPercentage || 0
+                        )
+                      }})</span
+                    >
+                  </span>
+                  <div
+                    *ngIf="isLoadingSummary"
+                    class="animate-pulse bg-gray-200 h-6 w-20 rounded"
+                  ></div>
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div
+                class="h-8 w-8 bg-gray-600 rounded-md flex items-center justify-center"
+              >
+                <span class="text-white text-sm">📊</span>
+              </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">
+                  Monthly Change
+                </dt>
+                <dd
+                  class="text-lg font-medium"
+                  [class]="
+                    getReturnColorClass(portfolioSummary.monthlyChange || 0)
+                  "
+                >
+                  <span *ngIf="!isLoadingSummary">
+                    {{ formatCurrency(portfolioSummary.monthlyChange || 0) }}
+                    <span class="text-sm"
+                      >({{
+                        formatPercentage(
+                          portfolioSummary.monthlyChangePercentage || 0
+                        )
+                      }})</span
+                    >
+                  </span>
+                  <div
+                    *ngIf="isLoadingSummary"
+                    class="animate-pulse bg-gray-200 h-6 w-20 rounded"
+                  ></div>
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-1">
+        <div class="bg-white shadow rounded-lg p-6">
+          <h3 class="text-lg font-medium text-gray-900 mb-4">
+            Asset Allocation
+          </h3>
+          <div class="h-72 flex items-center justify-center">
+            <div *ngIf="isLoadingAllocation" class="text-center">
+              <div
+                class="animate-spin rounded-full h-12 w-12 border-b-2 border-cambridge-blue mx-auto"
+              ></div>
+              <p class="mt-2 text-sm text-gray-500">Loading chart...</p>
+            </div>
+            <div
+              *ngIf="!isLoadingAllocation && chartData"
+              class="w-full h-full"
+            >
+            <!-- TODO: Create Chart Component -->
+            </div>
+            <div
+              *ngIf="!isLoadingAllocation && !chartData"
+              class="text-center text-gray-500"
+            >
+              <p>No data available</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-2">
+        <div class="bg-white shadow rounded-lg">
+          <div
+            class="px-6 py-4 border-b border-gray-200 flex justify-between items-center"
+          >
+            <h3 class="text-lg font-medium text-gray-900">Your Investments</h3>
+            <button
+              (click)="refreshData()"
+              [disabled]="isRefreshing"
+              class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-cambridge-blue hover:bg-cambridge-blue-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cambridge-blue disabled:opacity-50"
+            >
+              <span *ngIf="!isRefreshing">🔄 Refresh</span>
+              <span *ngIf="isRefreshing" class="flex items-center">
+                <svg
+                  class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Refreshing...
+              </span>
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Asset
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Type
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Invested
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Current Value
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Return
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr *ngIf="isLoadingInvestments">
+                  <td colspan="5" class="px-6 py-4 text-center">
+                    <div class="flex items-center justify-center">
+                      <div
+                        class="animate-spin rounded-full h-6 w-6 border-b-2 border-cambridge-blue"
+                      ></div>
+                      <span class="ml-2 text-sm text-gray-500"
+                        >Loading investments...</span
+                      >
+                    </div>
+                  </td>
+                </tr>
+                <tr
+                  *ngFor="let investment of investments"
+                  class="hover:bg-gray-50"
+                >
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">
+                        {{ investment.name }}
+                      </div>
+                      <div class="text-sm text-gray-500">
+                        {{ investment.symbol }}
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span
+                      class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                      [class]="getTypeColorClass(investment.type)"
+                    >
+                      {{ getTypeLabel(investment.type) }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {{ formatCurrency(investment.investedAmount) }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {{ formatCurrency(investment.currentValue) }}
+                  </td>
+                  <td
+                    class="px-6 py-4 whitespace-nowrap text-sm"
+                    [class]="getReturnColorClass(investment.return)"
+                  >
+                    {{ formatCurrency(investment.return) }}
+                    <span class="block text-xs"
+                      >({{
+                        formatPercentage(investment.returnPercentage)
+                      }})</span
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
