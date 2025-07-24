@@ -35,5 +35,5 @@ jobs:
 
     - name: Deploy to S3
       run: |
-        aws s3 sync dist/investment-tracker/browser/ s3://investment-tracker-ricardo-rocker --delete
-        aws s3 cp dist/investment-tracker/browser/index.html s3://investmenttracker-ricardo-rocker/index.html --cache-control no-cache
+        aws s3 sync dist/investment-tracker-app/browser/ s3://investment-tracker-ricardo-rocker --delete
+        aws s3 cp dist/investment-tracker-app/browser/index.html s3://investment-tracker-ricardo-rocker/index.html --cache-control no-cache
