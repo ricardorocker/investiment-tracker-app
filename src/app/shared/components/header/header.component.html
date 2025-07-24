@@ -17,8 +17,13 @@
       <div class="flex items-center space-x-4" *ngIf="currentUser">
         <div class="text-sm">
           <p class="text-cambridge-gray font-medium">Welcome back,</p>
-          <p class="text-cambridge-blue font-semibold">
-            {{ currentUser.name }}
+          <p class="text-cambridge-blue font-bold hover:translate-x-0.5 hover:bg-slate-100 hover:px-2">
+            <a
+              href="https://www.linkedin.com/in/ricardo-s-rocker/"
+              target="_blank"
+            >
+              {{ currentUser.name }}
+            </a>
           </p>
         </div>
 

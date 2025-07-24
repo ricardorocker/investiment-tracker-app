@@ -1,27 +1,127 @@
-# InvestmentTrackerApp
+# 💼 Investment Tracker
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.14.
+**Investment Tracker** is a web application built with **Angular 18**, **Tailwind CSS**, and integrated with **AWS services** like Lambda, API Gateway, and S3. Its main goal is to provide a modern, responsive, and reliable interface to track investment portfolios — including real-time visualizations and performance dashboards.
 
-## Development server
+---
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## 🚀 Tech Stack
 
-## Code scaffolding
+- **Angular 18** (using Standalone Components)
+- **Tailwind CSS** for styling
+- **Chart.js** for data visualization
+- **AWS Lambda (Python)** for backend logic
+- **AWS API Gateway** for RESTful endpoints
+- **AWS S3** for static web hosting
+- **GitHub Actions** for automated CI/CD
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+---
 
-## Build
+## 📦 Core Features
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### 🔐 Login
 
-## Running unit tests
+- Responsive login screen with form validation
+- Simulated authentication and navigation to the dashboard
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### 📊 Dashboard
 
-## Running end-to-end tests
+- Displays key investment metrics:
+  - Total Invested
+  - Current Value
+  - Total and Monthly Returns
+- `Doughnut` chart showing portfolio allocation
+- Detailed investment table
+- Refresh button simulating live data updates
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### 📈 AWS Integration (Lambda + API Gateway)
 
-## Further help
+- `GET /portfolio-summary`: fetches portfolio summary
+- `GET /investments`: retrieves investment list
+- `GET /asset-allocation`: returns portfolio allocation by asset type
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Endpoints are backed by **AWS Lambda Functions** (written in Python) and exposed via **API Gateway**. These are consumed by Angular through `HttpClient` in `InvestmentService`.
+
+### ⚙️ GitHub Actions CI/CD
+
+Every commit pushed to the `main` branch:
+
+1. Triggers a production build
+2. Syncs the generated files to an AWS S3 bucket
+3. Automatically updates the live application
+
+Workflow is defined in [`deploy.yml`](./.github/workflows/deploy.yml).
+
+---
+
+## 🧱 Project Architecture
+
+### 🗂 Folder Structure
+
+- `core/models/`: investment and summary interfaces
+- `core/services/`: API service layer
+- `shared/components/`: reusable components (Header, Chart)
+- `pages/login/`: login screen
+- `pages/dashboard/`: main portfolio dashboard
+
+### 🧩 Standalone Components (Angular 18)
+
+The application is fully structured with Angular Standalone Components, featuring:
+
+- `bootstrapApplication` entry point
+- Routing with `provideRouter`
+- API communication via `provideHttpClient`
+- Modular and clean imports without NgModules
+
+---
+
+## 📊 Visual Highlights
+
+- Dynamic `doughnut` chart using Chart.js
+- Responsive and styled investment table
+- Skeleton loading and animation via Tailwind classes
+
+---
+
+## 📁 Getting Started
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/your-username/investment-tracker.git
+cd investment-tracker
+
+# 2. Install dependencies
+npm install
+
+# 3. Start the development server
+npm start
+```
+
+---
+
+## 🌐 AWS S3 Deployment (CI/CD)
+
+CI/CD is handled through a GitHub Actions workflow:
+
+- Checks out repository
+- Installs dependencies
+- Builds Angular app
+- Deploys to AWS S3 using `aws s3 sync`
+
+No manual steps needed after pushing to `main`.
+
+---
+
+## 📝 Notes
+
+- Backend data is mocked through AWS Lambda using Python
+- This project demonstrates best practices in frontend architecture and AWS integration
+- Custom color palette and typography give the app a financial & professional identity
+
+---
+
+## 👨‍💻 Author
+
+**Ricardo Rocker**  
+Senior Angular Developer  
+[ricardo.santos.rocker@gmail.com](mailto:ricardo.santos.rocker@gmail.com)
+https://www.linkedin.com/in/ricardo-s-rocker/
