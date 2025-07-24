@@ -2,7 +2,6 @@
   <app-header></app-header>
 
   <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-    <!-- Welcome Section -->
     <div class="mb-8">
       <h1 class="text-3xl font-serif font-bold text-cambridge-gray">
         Dashboard
@@ -30,7 +29,7 @@
                 </dt>
                 <dd class="text-lg font-medium text-gray-900">
                   <span *ngIf="!isLoadingSummary">{{
-                    formatCurrency(portfolioSummary.totalInvested || 0)
+                    formatCurrency(portfolioSummary?.totalInvested || 0)
                   }}</span>
                   <div
                     *ngIf="isLoadingSummary"
@@ -60,7 +59,7 @@
                 </dt>
                 <dd class="text-lg font-medium text-gray-900">
                   <span *ngIf="!isLoadingSummary">{{
-                    formatCurrency(portfolioSummary.currentValue || 0)
+                    formatCurrency(portfolioSummary?.currentValue || 0)
                   }}</span>
                   <div
                     *ngIf="isLoadingSummary"
@@ -91,15 +90,15 @@
                 <dd
                   class="text-lg font-medium"
                   [class]="
-                    getReturnColorClass(portfolioSummary.totalReturn || 0)
+                    getReturnColorClass(portfolioSummary?.totalReturn || 0)
                   "
                 >
                   <span *ngIf="!isLoadingSummary">
-                    {{ formatCurrency(portfolioSummary.totalReturn || 0) }}
+                    {{ formatCurrency(portfolioSummary?.totalReturn || 0) }}
                     <span class="text-sm"
                       >({{
                         formatPercentage(
-                          portfolioSummary.totalReturnPercentage || 0
+                          portfolioSummary?.totalReturnPercentage || 0
                         )
                       }})</span
                     >
@@ -133,15 +132,15 @@
                 <dd
                   class="text-lg font-medium"
                   [class]="
-                    getReturnColorClass(portfolioSummary.monthlyChange || 0)
+                    getReturnColorClass(portfolioSummary?.monthlyChange || 0)
                   "
                 >
                   <span *ngIf="!isLoadingSummary">
-                    {{ formatCurrency(portfolioSummary.monthlyChange || 0) }}
+                    {{ formatCurrency(portfolioSummary?.monthlyChange || 0) }}
                     <span class="text-sm"
                       >({{
                         formatPercentage(
-                          portfolioSummary.monthlyChangePercentage || 0
+                          portfolioSummary?.monthlyChangePercentage || 0
                         )
                       }})</span
                     >

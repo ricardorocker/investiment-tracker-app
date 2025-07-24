@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { CommonModule } from '@angular/common';
 import { ChartComponent } from '../../shared/components/chart/chart.component';
+import { PortfolioSummary } from '../../core/models/portfolio-summary';
+import { Investment } from '../../core/models/investment';
+import { InvestmentService } from '../../core/services/investment.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,82 +14,8 @@ import { ChartComponent } from '../../shared/components/chart/chart.component';
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnInit {
-  portfolioSummary: {
-    totalInvested: number;
-    currentValue: number;
-    totalReturn: number;
-    totalReturnPercentage: number;
-    monthlyChange: number;
-    monthlyChangePercentage: number;
-  } = {
-    totalInvested: 125000,
-    currentValue: 142350,
-    totalReturn: 17350,
-    totalReturnPercentage: 13.88,
-    monthlyChange: 2450,
-    monthlyChangePercentage: 1.75,
-  };
-  investments: {
-    id: string;
-    name: string;
-    type: 'stock' | 'fund' | 'crypto' | 'bond';
-    investedAmount: number;
-    currentValue: number;
-    return: number;
-    returnPercentage: number;
-    symbol: string;
-  }[] = [
-    {
-      id: '1',
-      name: 'Apple Inc.',
-      type: 'stock',
-      symbol: 'AAPL',
-      investedAmount: 25000,
-      currentValue: 28750,
-      return: 3750,
-      returnPercentage: 15.0,
-    },
-    {
-      id: '2',
-      name: 'Vanguard S&P 500 ETF',
-      type: 'fund',
-      symbol: 'VOO',
-      investedAmount: 40000,
-      currentValue: 44200,
-      return: 4200,
-      returnPercentage: 10.5,
-    },
-    {
-      id: '3',
-      name: 'Bitcoin',
-      type: 'crypto',
-      symbol: 'BTC',
-      investedAmount: 15000,
-      currentValue: 18900,
-      return: 3900,
-      returnPercentage: 26.0,
-    },
-    {
-      id: '4',
-      name: 'Microsoft Corporation',
-      type: 'stock',
-      symbol: 'MSFT',
-      investedAmount: 30000,
-      currentValue: 32100,
-      return: 2100,
-      returnPercentage: 7.0,
-    },
-    {
-      id: '5',
-      name: 'US Treasury Bond',
-      type: 'bond',
-      symbol: 'UST',
-      investedAmount: 15000,
-      currentValue: 15400,
-      return: 400,
-      returnPercentage: 2.67,
-    },
-  ];
+  portfolioSummary: PortfolioSummary | null = null;
+  investments: Investment[] = [];
   isLoadingSummary = true;
   isLoadingInvestments = true;
   isLoadingAllocation = true;
@@ -108,6 +37,8 @@ export class DashboardComponent implements OnInit {
     },
   };
 
+  constructor(private investmentService: InvestmentService) {}
+
   ngOnInit(): void {
     this.loadData();
   }
@@ -119,30 +50,39 @@ export class DashboardComponent implements OnInit {
   }
 
   private loadPortfolioSummary(): void {
-    setTimeout(() => {
-      this.isLoadingSummary = false;
-    }, 1000);
+    this.investmentService.getPortfolioSummary().subscribe({
+      next: (summary) => {
+        this.portfolioSummary = summary;
+        this.isLoadingSummary = false;
+      },
+      error: () => {
+        this.isLoadingSummary = false;
+      },
+    });
   }
 
   private loadInvestments(): void {
-    setTimeout(() => {
-      this.isLoadingInvestments = false;
-    }, 1000);
+    this.investmentService.getInvestments().subscribe({
+      next: (investments) => {
+        this.investments = investments;
+        this.isLoadingInvestments = false;
+      },
+      error: () => {
+        this.isLoadingInvestments = false;
+      },
+    });
   }
 
   private loadAssetAllocation(): void {
-    setTimeout(() => {
-      this.isLoadingAllocation = false;
-      const mockAllocation = [
-        { type: 'Stocks', value: 60850, percentage: 42.8 },
-        { type: 'Funds', value: 44200, percentage: 31.1 },
-        { type: 'Crypto', value: 18900, percentage: 13.3 },
-        { type: 'Bonds', value: 15400, percentage: 10.8 },
-        { type: 'Cash', value: 3000, percentage: 2.1 },
-      ];
-
-      this.createChartData(mockAllocation);
-    }, 1000);
+    this.investmentService.getAssetAllocation().subscribe({
+      next: (allocation) => {
+        this.isLoadingAllocation = false;
+        this.createChartData(allocation);
+      },
+      error: () => {
+        this.isLoadingAllocation = false;
+      },
+    });
   }
 
   private createChartData(
@@ -165,10 +105,15 @@ export class DashboardComponent implements OnInit {
 
   refreshData(): void {
     this.isRefreshing = true;
-
-    setTimeout(() => {
-      this.isRefreshing = false;
-    }, 1000);
+    this.investmentService.refreshData().subscribe({
+      next: () => {
+        this.loadData();
+        this.isRefreshing = false;
+      },
+      error: () => {
+        this.isRefreshing = false;
+      },
+    });
   }
 
   formatCurrency(amount: number): string {
